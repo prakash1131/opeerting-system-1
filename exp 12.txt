@@ -1,0 +1,47 @@
+import string
+
+alpha = {c:i for i,c in enumerate(string.ascii_lowercase)}
+ralpha = {i:c for c,i in alpha.items()}
+
+K = [[9,4],[5,7]]   # key matrix
+
+# ---------- Encryption ----------
+def hill_encrypt(text):
+    text = "".join([c for c in text.lower() if c.isalpha()])
+    if len(text) % 2 == 1:
+        text += 'x'
+    cipher = ""
+    for i in range(0, len(text), 2):
+        a = alpha[text[i]]
+        b = alpha[text[i+1]]
+        c1 = (9*a + 4*b) % 26
+        c2 = (5*a + 7*b) % 26
+        cipher += ralpha[c1] + ralpha[c2]
+    return cipher
+
+# ---------- Decryption ----------
+Kinv = [[5,12],[15,25]]  # inverse matrix mod 26
+
+def hill_decrypt(cipher):
+    plain = ""
+    for i in range(0, len(cipher), 2):
+        a = alpha[cipher[i]]
+        b = alpha[cipher[i+1]]
+        p1 = (Kinv[0][0]*a + Kinv[0][1]*b) % 26
+        p2 = (Kinv[1][0]*a + Kinv[1][1]*b) % 26
+        plain += ralpha[p1] + ralpha[p2]
+    return plain
+
+# ---------- Run ----------
+pt = "meet me at the usual place at ten rather than eight oclock"
+cipher = hill_encrypt(pt)
+print("Ciphertext:", cipher)
+
+decrypted = hill_decrypt(cipher)
+print("Decrypted:", decrypted)
+
+
+OUTPUT
+
+Ciphertext: ukixukydromeiwszxwiokunukhxhroajroanqyebtlkjegad
+Decrypted: meetmeattheusualplaceattenratherthaneightoclockx

@@ -1,0 +1,43 @@
+# Convert letter to number (a=0 ... z=25)
+def n(c):
+    return ord(c) - 97
+
+# Known plaintext and ciphertext (4 letters = 2×2 matrix)
+pt = "help"
+ct = "xuwy"
+
+# Build matrices manually
+P = [[n(pt[0]), n(pt[1])],
+     [n(pt[2]), n(pt[3])]]
+
+C = [[n(ct[0]), n(ct[1])],
+     [n(ct[2]), n(ct[3])]]
+
+# Compute determinant of P
+det = (P[0][0]*P[1][1] - P[0][1]*P[1][0]) % 26
+
+# Find modular inverse of determinant
+det_inv = None
+for x in range(26):
+    if (det * x) % 26 == 1:
+        det_inv = x
+        break
+
+# Adjoint matrix of P
+adj = [[ P[1][1], -P[0][1]],
+       [-P[1][0],  P[0][0]]]
+
+# Compute inverse of P: P_inv = det_inv * adj mod 26
+P_inv = [[(det_inv * adj[i][j]) % 26 for j in range(2)] for i in range(2)]
+
+# Recover key:  K = C * P_inv mod 26
+K = [[(C[i][0]*P_inv[0][j] + C[i][1]*P_inv[1][j]) % 26 for j in range(2)]
+     for i in range(2)]
+
+print("Recovered key matrix:")
+print(K)
+
+OUTPUT
+
+Recovered key matrix:
+[[11, 14], [16, 6]]
