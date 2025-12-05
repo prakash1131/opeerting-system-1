@@ -1,0 +1,54 @@
+# Ciphertext already inside the program
+ciphertext = "khoor zruog"   # change this to attack any message
+top_n = 10                   # how many best guesses to show
+
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+# English letter frequency (approximate)
+freq = {
+    'e':12.7,'t':9.1,'a':8.2,'o':7.5,'i':7.0,'n':6.7,'s':6.3,'h':6.1,'r':6.0,
+    'd':4.3,'l':4.0,'c':2.8,'u':2.8,'m':2.4,'w':2.4,'f':2.2,'g':2.0,'y':2.0,
+    'p':1.9,'b':1.5,'v':1.0,'k':0.8,'j':0.1,'x':0.1,'q':0.1,'z':0.1
+}
+
+def decrypt(ct, shift):
+    result = ""
+    for c in ct:
+        if c.isalpha():
+            p = (alphabet.index(c) - shift) % 26
+            result += alphabet[p]
+        else:
+            result += c
+    return result
+
+def score(text):
+    return sum(freq.get(c, 0) for c in text)
+
+# Try all possible shifts
+results = []
+for k in range(26):
+    pt = decrypt(ciphertext, k)
+    results.append((score(pt), k, pt))
+
+# Sort by likelihood
+results.sort(reverse=True)
+
+print("Top guesses:\n")
+for i in range(top_n):
+    print(f"Rank {i+1} (shift={results[i][1]}): {results[i][2]}")
+
+
+OUTPUT
+
+Top guesses:
+
+Rank 1 (shift=6): ebiil tloia
+Rank 2 (shift=10): axeeh phkew
+Rank 3 (shift=3): hello world
+Rank 4 (shift=14): wtaad ldgas
+Rank 5 (shift=21): pmttw ewztl
+Rank 6 (shift=13): xubbe mehbt
+Rank 7 (shift=0): khoor zruog
+Rank 8 (shift=7): dahhk sknhz
+Rank 9 (shift=25): lipps asvph
+Rank 10 (shift=22): olssv dvysk

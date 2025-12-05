@@ -1,0 +1,65 @@
+# Monoalphabetic substitution frequency attack (very simple version)
+
+ciphertext = "ymnx nx f xywnsl tsj f xjsyjshj dtzw"  # change as needed
+top_n = 10
+
+import string
+alphabet = string.ascii_lowercase
+
+# English letter frequency order (most → least common)
+english_freq_order = "etaoinshrdlcumwfgypbvkjxqz"
+
+# Count ciphertext letter frequencies
+freq = {}
+for c in ciphertext:
+    if c.isalpha():
+        freq[c] = freq.get(c, 0) + 1
+
+# Sort ciphertext letters by frequency (most→least)
+cipher_freq_order = ''.join(sorted(freq, key=freq.get, reverse=True))
+
+# Generate guesses: map in different shifted frequency patterns
+guesses = []
+for shift in range(top_n):
+    mapping = {}
+    for i, c in enumerate(cipher_freq_order):
+        if i + shift < 26:
+            mapping[c] = english_freq_order[i + shift]
+        else:
+            mapping[c] = english_freq_order[(i + shift) % 26]
+
+    # Decrypt using this mapping
+    pt = ""
+    for ch in ciphertext:
+        pt += mapping.get(ch, ch)
+    guesses.append((shift, pt))
+
+# Print top N guesses
+print("Top possible plaintexts:\n")
+for rank, text in guesses:
+    print(f"Rank {rank+1}: {text}\n")
+
+
+OUTPUT
+
+Top possible plaintexts:
+
+Rank 1: orie ie n eositd hta n eatoatla chus
+
+Rank 2: idnt nt s tihnal rao s toaioaco urmh
+
+Rank 3: nlsa sa h anrsoc doi h aionioui mdwr
+
+Rank 4: scho ho r osdhiu lin r onisnimn wlfd
+
+Rank 5: huri ri d ihlrnm cns d isnhsnws fcgl
+
+Rank 6: rmdn dn l nrcdsw ush l nhsrhsfh guyc
+
+Rank 7: dwls ls c sdulhf mhr c srhdrhgr ympu
+
+Rank 8: lfch ch u hlmcrg wrd u hdrldryd pwbm
+
+Rank 9: cgur ur m rcwudy fdl m rldcldpl bfvw
+
+Rank 10: uymd md w dufmlp glc w dcluclbc vgkf

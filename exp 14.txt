@@ -1,0 +1,27 @@
+import random
+
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+plaintext = "attackatdawn"
+
+# generate random key (same length as plaintext)
+key = [random.randint(0, 25) for _ in plaintext]
+
+ciphertext = ""
+
+print("Key:", key)
+
+# encryption
+for i in range(len(plaintext)):
+    p = alphabet.index(plaintext[i])
+    c = (p + key[i]) % 26
+    ciphertext += alphabet[c]
+
+print("Plaintext: ", plaintext)
+print("Ciphertext:", ciphertext)
+
+OUTPUT
+
+Key: [24, 0, 14, 6, 20, 12, 7, 13, 8, 21, 18, 7]
+Plaintext:  attackatdawn
+Ciphertext: ythgwwhglvou
